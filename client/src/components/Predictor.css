@@ -1,0 +1,120 @@
+.main-container {
+  height: 88vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+}
+
+.result-container {
+  border: 1px solid red;
+  height: 100%;
+  width: 50%;
+}
+
+.form-container {
+  height: 100%;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+}
+
+.health-form {
+  border: 1px thin rgb(141, 140, 140);
+  height: 92%;
+  width: 73%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  border-radius: 14px;
+  box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px,
+    rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px,
+    rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;
+}
+
+.health-form h1 {
+  margin-top: -20px;
+  margin-bottom: 40px;
+}
+
+.health-form div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: row;
+}
+
+.health-form div input {
+  height: 38px;
+  width: 210px;
+  border: 1px thin gray;
+}
+
+.health-form div :nth-child(1) {
+  margin-right: 35px;
+}
+
+.health-form div {
+  padding: 20px;
+}
+
+.health-form .gender-radio {
+  width: 16px;
+}
+
+::-webkit-input-placeholder {
+  font-size: 16px;
+}
+
+:-moz-placeholder {
+  font-size: 16px;
+}
+
+.sex-radio {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.health-form .sex-radio :nth-child(1) {
+  margin-right: 10px;
+}
+.sex-radio :nth-child(2) {
+  margin-right: 10px;
+  margin-left: 50px;
+}
+
+.health-form button {
+  height: 38px;
+  width: 190px;
+  border: none;
+  color: white;
+  background-color: rgb(252, 59, 59);
+  cursor: pointer;
+  margin-top: 30px;
+  border-radius: 19px;
+  font-size: 14px;
+}
+
+.health-form button:hover {
+  color: rgb(255, 39, 39);
+  background-color: white;
+  border: 0.6px solid rgb(255, 42, 42);
+  transition: 0.6s all ease;
+}
+
+input[type="number"] {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #000000;
+}
+
+input[type="number"]:focus {
+  background: transparent;
+  border: none;
+  border-bottom: 1px thin #000000;
+}
