@@ -3,6 +3,7 @@ const router = new express.Router();
 const userdb = require("../models/userSchema");
 var bcrypt = require("bcryptjs");
 const authenticate = require("../middleware/authenticate");
+const { spawn } = require("child_process");
 
 // for user registration
 
@@ -111,6 +112,36 @@ router.get("/logout", authenticate, async (req, res) => {
   } catch (error) {
     res.status(401).json({ status: 401, error });
   }
+});
+
+router.post("/predict", (req, res) => {
+  // Get the input data from the request body
+  const { chol, tgl, hdl_chol, vldl_chol, chol_hdl_ratio, ldl_chol, age, sex } =
+    req.body;
+
+  // Spawn a Python process to make the prediction
+  const pythonProcess = spawn("python", [
+    "./predict.py",
+    chol,
+    tgl,
+    hdl_chol,
+    vldl_chol,
+    chol_hdl_ratio,
+    ldl_chol,
+    age,
+    sex,
+  ]);
+
+  // Collect the output from the Python process
+  let output = "";
+  pythonProcess.stdout.on("data", (data) => {
+    output += data.toString();
+  });
+
+  // When the Python process exits, send the output back to the frontend
+  pythonProcess.on("close", (code) => {
+    res.json({ prediction: output.trim() });
+  });
 });
 
 module.exports = router;

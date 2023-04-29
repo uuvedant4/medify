@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./Predictor.css";
+import axios from "axios";
+import Guage from "./Guage";
 
 const Predictor = () => {
   const [formData, setFormData] = useState({
@@ -13,22 +15,27 @@ const Predictor = () => {
     sex: "",
   });
   const [prediction, setPrediction] = useState("");
-  const [error, setError] = useState("");
+  const url = "http://localhost:8009/predict";
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios
+      .post(url, formData)
+      .then((response) => setPrediction(response.data))
+      .catch((error) => console.log(error));
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((formData) => ({ ...formData, [name]: value }));
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <div className="main-container">
       <div className="result-container">
-        <div>Guage</div>
-        <div>Result & Mail</div>
+        <div className="result1">
+          <Guage />
+        </div>
+        <div className="result2">{console.log(prediction.prediction)}</div>
       </div>
       <div className="form-container">
         <form className="health-form" onSubmit={handleSubmit}>
@@ -115,9 +122,7 @@ const Predictor = () => {
             />
             Female
           </div>
-          <button onClick={() => console.log(formData)} type="submit">
-            Analyze
-          </button>
+          <button type="submit">Analyze</button>
         </form>
       </div>
     </div>
