@@ -5,6 +5,7 @@ import { LoginContext } from "./ContextProvider/Context";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useNavigate, NavLink } from "react-router-dom";
+import Logo from "../assets/logo.png";
 
 const Header = () => {
   const { logindata, setLoginData } = useContext(LoginContext);
@@ -59,7 +60,7 @@ const Header = () => {
       <header>
         <nav>
           <NavLink to="/">
-            <h1>Medify</h1>
+            <img style={{ width: "140px" }} src={Logo} />
           </NavLink>
           <div className="avtar">
             {logindata.ValidUserOne ? (
