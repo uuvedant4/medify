@@ -67,7 +67,9 @@ const Predictor = () => {
                 </p>
               )}
             </div>
-            {prediction.prediction > 0.6 ? <ConsultForm /> : null}
+            {prediction.prediction > 0.6 ? (
+              <ConsultForm formData={formData} />
+            ) : null}
           </div>
         )}
       </div>

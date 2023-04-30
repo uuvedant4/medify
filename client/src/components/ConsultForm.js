@@ -1,30 +1,33 @@
 import { useState } from "react";
+import axios from "axios";
 
-const ConsultForm = () => {
-  const props = { probability: 0.9 };
+const ConsultForm = ({ formData }) => {
   const [patientName, setPatientName] = useState("");
   const [doctorName, setDoctorName] = useState("");
   const [doctorEmail, setDoctorEmail] = useState("");
-  const [healthData, setHealthData] = useState("");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    const data = {
+      patientName,
+      doctorName,
+      doctorEmail,
+      formData,
+    };
 
-    // Send health data to doctor using the specified information
-    console.log("Health data:", healthData);
-    console.log("Patient name:", patientName);
-    console.log("Doctor name:", doctorName);
-    console.log("Doctor email:", doctorEmail);
+    const url = "http://localhost:8009/send-email";
 
-    // Send health data email if probability is above 50%
-    if (props.probability > 0.5) {
-      //   sendHealthDataEmail(patientName, doctorName, doctorEmail, healthData);
+    try {
+      const response = await axios.post(url, data);
+      console.log(data);
+      console.log(response.data);
+      // Reset form after successful submission
+      setPatientName("");
+      setDoctorName("");
+      setDoctorEmail("");
+    } catch (error) {
+      console.log(error);
     }
-
-    setPatientName("");
-    setDoctorName("");
-    setDoctorEmail("");
-    setHealthData("");
   };
 
   return (
@@ -48,11 +51,11 @@ const ConsultForm = () => {
           value={doctorEmail}
           onChange={(event) => setDoctorEmail(event.target.value)}
           required
-        />{" "}
+        />
+        <div className="consult-btn">
+          <button type="submit">Send</button>
+        </div>
       </form>
-      <div className="consult-btn">
-        <button type="submit">Send</button>
-      </div>
     </div>
   );
 };
