@@ -1,16 +1,8 @@
-import React, { useState } from "react";
 import GaugeChart from "react-gauge-chart";
 
-const Guage = () => {
-  const [gauge, setGauge] = useState(0);
-
-  const handleGaugeIncrease = (e) => {
-    e.preventDefault();
-    setGauge((gauge) => gauge + 0.61);
-  };
-
+const Guage = ({ gauge }) => {
   const chartStyle = {
-    height: 25,
+    width: 420,
   };
 
   const gaugeContainerStyle = {
@@ -18,7 +10,7 @@ const Guage = () => {
     justifyContent: "center",
     flexDirection: "column",
     alignItems: "center",
-    height: "85%",
+    height: "120%",
   };
 
   return (

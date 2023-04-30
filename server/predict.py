@@ -11,8 +11,8 @@ def make_prediction(input_data):
     input_data = np.array(input_data).reshape(1, -1)
     
     # Make the prediction using the loaded model
-    prediction = model.predict(input_data)
-    
+    prediction_prob = model.predict_proba(input_data)
+    prediction = prediction_prob[:, 1]
     # Return the prediction as a string
     return str(prediction[0])
 

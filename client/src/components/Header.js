@@ -60,7 +60,7 @@ const Header = () => {
       <header>
         <nav>
           <NavLink to="/">
-            <img style={{ width: "140px" }} src={Logo} />
+            <img style={{ width: "160px" }} src={Logo} />
           </NavLink>
           <div className="avtar">
             {logindata.ValidUserOne ? (
