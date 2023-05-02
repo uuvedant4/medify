@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./Predictor.css";
+import axios from "axios";
+import Guage from "./Guage";
+import ConsultForm from "./ConsultForm";
 
 const Predictor = () => {
   const [formData, setFormData] = useState({
@@ -12,23 +15,63 @@ const Predictor = () => {
     age: "",
     sex: "",
   });
+  const [gauge, setGauge] = useState(0);
   const [prediction, setPrediction] = useState("");
-  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (Number(prediction.prediction)) {
+      setGauge(prediction.prediction);
+    }
+  }, [prediction]);
+
+  const url = "http://localhost:8009/predict";
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    await axios
+      .post(url, formData)
+      .then((response) => setPrediction(response.data))
+      .catch((error) => console.log(error));
+    console.log(prediction.prediction);
+  };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((formData) => ({ ...formData, [name]: value }));
   };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <div className="main-container">
       <div className="result-container">
-        <div>Guage</div>
-        <div>Result & Mail</div>
+        <div className="result1">
+          <Guage gauge={gauge} />
+        </div>
+        {prediction.prediction && (
+          <div className="result2">
+            <div className="result-tag">
+              {prediction.prediction > 0.6 ? (
+                <>
+                  <p>
+                    <span style={{ color: "red" }}>HIGH RISK!</span> You have a{" "}
+                    <span style={{ fontSize: "21px" }}>
+                      {Math.round(
+                        (prediction.prediction * 100 + Number.EPSILON) * 100
+                      ) / 100}
+                      %
+                    </span>{" "}
+                    chance of having heart disease
+                  </p>
+                </>
+              ) : (
+                <p style={{ color: "green" }}>
+                  You are unlikely to have heart disease
+                </p>
+              )}
+            </div>
+            {prediction.prediction > 0.6 ? (
+              <ConsultForm formData={formData} />
+            ) : null}
+          </div>
+        )}
       </div>
       <div className="form-container">
         <form className="health-form" onSubmit={handleSubmit}>
@@ -115,9 +158,7 @@ const Predictor = () => {
             />
             Female
           </div>
-          <button onClick={() => console.log(formData)} type="submit">
-            Analyze
-          </button>
+          <button type="submit">Analyze</button>
         </form>
       </div>
     </div>

@@ -3,6 +3,8 @@ const router = new express.Router();
 const userdb = require("../models/userSchema");
 var bcrypt = require("bcryptjs");
 const authenticate = require("../middleware/authenticate");
+const { spawn } = require("child_process");
+const nodemailer = require("nodemailer");
 
 // for user registration
 
@@ -110,6 +112,87 @@ router.get("/logout", authenticate, async (req, res) => {
     res.status(201).json({ status: 201 });
   } catch (error) {
     res.status(401).json({ status: 401, error });
+  }
+});
+
+router.post("/predict", (req, res) => {
+  // Get the input data from the request body
+  const { chol, tgl, hdl_chol, vldl_chol, chol_hdl_ratio, ldl_chol, age, sex } =
+    req.body;
+
+  // Spawn a Python process to make the prediction
+  const pythonProcess = spawn("python", [
+    "./predict.py",
+    chol,
+    tgl,
+    hdl_chol,
+    vldl_chol,
+    chol_hdl_ratio,
+    ldl_chol,
+    age,
+    sex,
+  ]);
+
+  // Collect the output from the Python process
+  let output = "";
+  pythonProcess.stdout.on("data", (data) => {
+    output += data.toString();
+  });
+
+  // When the Python process exits, send the output back to the frontend
+  pythonProcess.on("close", (code) => {
+    res.json({ prediction: output.trim() });
+  });
+});
+
+router.post("/send-email", async (req, res) => {
+  try {
+    const { patientName, doctorName, doctorEmail, formData } = req.body;
+
+    // Create a transporter to send the email using SMTP
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "ursvedantyetekar@gmail.com",
+        pass: "yhngpreitnjkpzdp",
+      },
+    });
+
+    // Create the email message
+    const message = {
+      from: "ursvedantyetekar@gmail.com",
+      to: doctorEmail,
+      subject: `Health Report for ${patientName}`,
+      text: `
+        Dear Dr. ${doctorName},
+
+        Here is the health report for ${patientName}:
+
+        Cholesterol: ${formData.chol}
+        Triglycerides: ${formData.tgl}
+        HDL Cholesterol: ${formData.hdl_chol}
+        VLDL Cholesterol: ${formData.vldl_chol}
+        Cholesterol/HDL Ratio: ${formData.chol_hdl_ratio}
+        LDL Cholesterol: ${formData.ldl_chol}
+        Age: ${formData.age}
+        Sex: ${formData.sex == 1 ? "Male" : "Female"}
+        
+                        Thank You!
+                        
+        Yours Sincerely,
+        Medify Health Report Bot.
+      `,
+    };
+
+    // Send the email
+    const info = await transporter.sendMail(message);
+
+    console.log("Email sent: ", info.messageId);
+
+    res.status(200).json({ message: "Email sent successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to send email" });
   }
 });
 
